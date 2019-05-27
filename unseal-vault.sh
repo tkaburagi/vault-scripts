@@ -5,22 +5,27 @@ if [ -z "$VAULT_HOST" ]; then
 	exit 1
 fi
 
-export FILENAME=vault-keys.json
+if [ -z "$JSONFILE" ]; then
+	echo 'NO $JSONFILE'
+	exit 1
+fi
+
+echo $val
+
 export VAULT_ADDR="http://${VAULT_HOST}"
 
 echo $VAULT_ADDR
 
-vault operator init -format=json > $FILENAME
-export SHARES=`cat vault-keys.json | jq '.unseal_shares' -r`
-export THRESHOLD=`cat vault-keys.json | jq '.unseal_threshold' -r`
-export TOKEN=`cat vault-keys.json | jq ".root_token" -r`
+export SHARES=3
+export THRESHOLD=2
+export TOKEN=`cat $JSONFILE | jq ".root_token" -r`
 
 echo $SHARES
 echo $THRESHOLD
 
 for i in `seq $THRESHOLD`
 do
-	export KEY=`cat $FILENAME | jq ".unseal_keys_b64[$i]" -r`
+	export KEY=`cat $JSONFILE | jq ".keys[$i]" -r`
 	echo $KEY
 	vault operator unseal $KEY
 done
