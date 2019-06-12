@@ -1,4 +1,4 @@
-!#/bin/sh
+#!/bin/sh
 
 wget https://raw.githubusercontent.com/tkaburagi/vault-configs/master/remote-vault-template.hcl
 wget https://raw.githubusercontent.com/tkaburagi/consul-configs/master/consul-server-cluster-template.json
